@@ -4,7 +4,7 @@
  * If you're looking for examples or want to learn more, see README.
  */
 
-const Apify = require('apify');
+const Apify = require('apify'); 
 const { handleStart, handleList, handleDetail } = require('./routes');
 
 const { utils: { log } } = Apify;
