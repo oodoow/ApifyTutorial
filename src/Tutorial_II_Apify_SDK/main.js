@@ -5,25 +5,39 @@
  */
 
 const Apify = require('apify'); 
-const { handleStart, handleList, handleDetail } = require('./routes');
+const { handleStart, handleNextURL, handleDetail } = require('./routes');
 
 const { utils: { log } } = Apify;
 
-Apify.main(async () => {
-    const { startUrls } = await Apify.getInput();
+Apify.main(async () =>
+{
+    
+    let INPUT = await Apify.getInput();
+    if (!INPUT)
+    {
+        INPUT = {
+            "keyword": "samsung"
+        }
+    }  
 
-    const requestList = await Apify.openRequestList('start-urls', startUrls);
     const requestQueue = await Apify.openRequestQueue();
+    const startUrl = 'https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords='+ INPUT.keyword;
+    await requestQueue.addRequest({'url':startUrl});
+    
+
+
 
     const crawler = new Apify.CheerioCrawler({
-        requestList,
+        
         requestQueue,
         useApifyProxy: true,
         useSessionPool: true,
         persistCookiesPerSession: true,
         // Be nice to the websites.
         // Remove to unleash full power.
-        maxConcurrency: 50,
+        maxConcurrency: 1,
+        //for debugging
+        timeOut:1000,
         // You can remove this if you won't
         // be scraping any JSON endpoints.
         additionalMimeTypes: [
@@ -33,8 +47,8 @@ Apify.main(async () => {
             const { url, userData: { label } } = context.request;
             log.info('Page opened.', { label, url });
             switch (label) {
-                case 'LIST':
-                    return handleList(context);
+                case 'NEXT_URL':
+                    return handleNextURL(context, INPUT);
                 case 'DETAIL':
                     return handleDetail(context);
                 default:
@@ -45,5 +59,22 @@ Apify.main(async () => {
 
     log.info('Starting the crawl.');
     await crawler.run();
+
+    let dataset = await Apify.openDataset();
+    let info = await dataset.getInfo();
+    const options = (process.env.APIFY_TOKEN) ? null : { token: process.env.MY_APIFY_TOKEN };
+    const datasetLink = `https://api.apify.com/v2/datasets/${info.id}/items?format=json&clean=1`
+    if (!process.env.APIFY_TOKEN)
+    {
+        await Apify.call('apify/send-mail',
+            {
+                to: 'oodoow@gmail.com',
+                subject: 'Jan Suchomel - This is for the Apify SDK exercise',
+                text: datasetLink
+            },
+            options);
+    }
+
+
     log.info('Crawl finished.');
 });
