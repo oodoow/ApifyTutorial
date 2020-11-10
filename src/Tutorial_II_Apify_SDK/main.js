@@ -13,7 +13,8 @@ Apify.main(async () =>
 {
     
     let INPUT = await Apify.getInput();
-    if (!INPUT)
+
+    if (!INPUT || !INPUT.keyword)
     {
         INPUT = {
             "keyword": "samsung"
@@ -59,22 +60,21 @@ Apify.main(async () =>
 
     log.info('Starting the crawl.');
     await crawler.run();
+    log.info('Crawl finished.');
 
     let dataset = await Apify.openDataset();
     let info = await dataset.getInfo();
+    
     const options = (process.env.APIFY_TOKEN) ? null : { token: process.env.MY_APIFY_TOKEN };
     const datasetLink = `https://api.apify.com/v2/datasets/${info.id}/items?format=json&clean=1`
-    if (!process.env.APIFY_TOKEN)
+    log.info('Sending email with results link');
+    const result = await Apify.call('apify/send-mail',
     {
-        await Apify.call('apify/send-mail',
-            {
-                to: 'oodoow@gmail.com',
-                subject: 'Jan Suchomel - This is for the Apify SDK exercise',
-                text: datasetLink
-            },
-            options);
-    }
-
-
-    log.info('Crawl finished.');
+        to: 'oodoow@gmail.com',
+        subject: 'Jan Suchomel - This is for the Apify SDK exercise',
+        text: datasetLink
+    },
+        options);
+    log.info(result);
+    
 });
