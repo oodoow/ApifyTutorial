@@ -14,8 +14,9 @@ Apify.main(async () =>
     
     let INPUT = await Apify.getInput();
 
-    if (!INPUT || !INPUT.keyword)
+    if (!INPUT?.keyword)
     {
+        log.info("No input, default keyword: 'samsung'")
         INPUT = {
             "keyword": "samsung"
         }
@@ -65,7 +66,7 @@ Apify.main(async () =>
     let dataset = await Apify.openDataset();
     let info = await dataset.getInfo();
     
-    const options = (process.env.APIFY_TOKEN) ? null : { token: process.env.MY_APIFY_TOKEN };
+    const options = (process.env.APIFY_TOKEN) ? {} : { token: process.env.MY_APIFY_TOKEN };
     const datasetLink = `https://api.apify.com/v2/datasets/${info.id}/items?format=json&clean=1`
     log.info('Sending email with results link');
     const result = await Apify.call('apify/send-mail',
