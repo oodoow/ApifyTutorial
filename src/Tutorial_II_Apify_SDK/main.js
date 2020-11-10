@@ -14,7 +14,7 @@ Apify.main(async () =>
     
     let INPUT = await Apify.getInput();
 
-    if (!INPUT || !INPUT.keyword)
+    if (!INPUT?.keyword)
     {
         log.info("No input, default keyword: samsung'")
         INPUT = {
@@ -76,6 +76,5 @@ Apify.main(async () =>
         text: datasetLink
     },
         options);
-    log.info(result);
     
 });
