@@ -14,7 +14,7 @@ Apify.main(async () =>
     
     let INPUT = await Apify.getInput();
 
-    if (!INPUT?.keyword)
+    if (!INPUT.keyword)
     {
         log.info("No input, default keyword: samsung'")
         INPUT = {
