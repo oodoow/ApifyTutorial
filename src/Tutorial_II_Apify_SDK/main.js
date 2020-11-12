@@ -24,10 +24,7 @@ Apify.main(async () =>
     const requestQueue = await Apify.openRequestQueue();
     const startUrl = 'https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords='+ INPUT.keyword;
     await requestQueue.addRequest({'url':startUrl});
-    
-
-
-
+ 
     const crawler = new Apify.CheerioCrawler({
         
         requestQueue,
@@ -75,6 +72,4 @@ Apify.main(async () =>
         text: datasetLink
     },
         options);
-    log.info(result);
-    
 });
