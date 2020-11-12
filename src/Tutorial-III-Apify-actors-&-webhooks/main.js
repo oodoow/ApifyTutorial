@@ -2,7 +2,7 @@ const Apify = require('apify');
 
 Apify.main(async () =>
 { 
-    //const INPUT = await Apify.getInput();
+    const INPUT = await Apify.getInput();
     //const INPUT = await Apify.openDataset('VsMpzlvKxu57bZh2t', { forceCloud: true });
     if (!INPUT || INPUT == {})
     {
@@ -13,7 +13,7 @@ Apify.main(async () =>
     }
     log.info(INPUT);
 
-    //const data = await INPUT.getData();
+    
     const getPriceNumber = (x) => { return parseFloat(x.replace('$', '')) };
     const sameAsinGroups = Object.entries(INPUT.reduce((acc, item) =>
     {
