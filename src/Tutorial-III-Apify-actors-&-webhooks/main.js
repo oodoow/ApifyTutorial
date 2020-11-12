@@ -13,7 +13,7 @@ Apify.main(async () =>
         
     }
     
-
+    console.log(INPUT);
     console.log(INPUT.defaultDatasetId);
     //get data from amazon scraper default dataset
     let dataset = await Apify.openDataset(INPUT.defaultDatasetId, { forceCloud: true });
