@@ -26,7 +26,7 @@ Apify.main(async () =>
         return (getPriceNumber(acc.price) < getPriceNumber(item.price)) ? acc : item;
     }));
 
-    const dataset = Apify.openDataset();
+    const dataset = await Apify.openDataset();
     await dataset.pushData(cheapestDealers);
     log.info('Data Pushed');
 
