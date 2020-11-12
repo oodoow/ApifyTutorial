@@ -13,6 +13,7 @@ Apify.main(async () =>
         
     }
     log.info(INPUT);
+    console.log(INPUT);
 
     
     const getPriceNumber = (x) => { return parseFloat(x.replace('$', '')) };
