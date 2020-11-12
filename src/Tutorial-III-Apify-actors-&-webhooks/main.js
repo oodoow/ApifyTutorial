@@ -3,8 +3,8 @@ const { utils: { log } } = Apify;
 
 Apify.main(async () =>
 { 
-    //const INPUT = await Apify.getInput();
-    const INPUT = {defaultDatasetId :"RJy3eYurogxvwQXlK"}
+    const INPUT = await Apify.getInput();
+    //const INPUT = {defaultDatasetId :"RJy3eYurogxvwQXlK"}
     if (!INPUT || INPUT == {})
     {
         log.info("No input");
