@@ -15,9 +15,11 @@ Apify.main(async () =>
     //get data from amazon scraper default dataset
     let dataset = await Apify.openDataset(INPUT.defaultDatasetId, { forceCloud: true });
     const data = await dataset.getData();
+    
   
     log.info(INPUT);
     console.log(INPUT);
+    console.log(data.items);
 
     
     const getPriceNumber = (x) => { return parseFloat(x.replace('$', '')) };
