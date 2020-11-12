@@ -3,7 +3,8 @@ const { utils: { log } } = Apify;
 
 Apify.main(async () =>
 { 
-    const INPUT = await Apify.getInput();
+    //const INPUT = await Apify.getInput();
+    const INPUT = {defaultDatasetId :"RJy3eYurogxvwQXlK"}
     if (!INPUT || INPUT == {})
     {
         log.info("No input");
@@ -11,15 +12,20 @@ Apify.main(async () =>
 
         
     }
+    
 
+    console.log(INPUT.defaultDatasetId);
     //get data from amazon scraper default dataset
     let dataset = await Apify.openDataset(INPUT.defaultDatasetId, { forceCloud: true });
     const data = await dataset.getData();
     
-  
-    log.info(INPUT);
-    console.log(INPUT);
+    console.log('dataItems:');
     console.log(data.items);
+    if (!data.items.length)
+    {
+        log.info("No, data!");
+    }
+
 
     
     const getPriceNumber = (x) => { return parseFloat(x.replace('$', '')) };
