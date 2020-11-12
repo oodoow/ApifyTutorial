@@ -12,9 +12,8 @@ Apify.main(async () =>
         
     }
 
-
     //get data from amazon scraper default dataset
-    const dataset = await Apify.openDataset(INPUT.defaultDatasetId, { forceCloud: true });
+    let dataset = await Apify.openDataset(INPUT.defaultDatasetId, { forceCloud: true });
     const data = await dataset.getData();
   
     log.info(INPUT);
@@ -32,10 +31,7 @@ Apify.main(async () =>
         return (getPriceNumber(acc.price) < getPriceNumber(item.price)) ? acc : item;
     }));
 
-    const dataset = await Apify.openDataset();
+    dataset = await Apify.openDataset();
     await dataset.pushData(cheapestDealers);
     log.info('Data Pushed');
-
- 
-
 })
