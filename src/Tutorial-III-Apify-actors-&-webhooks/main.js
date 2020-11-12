@@ -1,4 +1,5 @@
 const Apify = require('apify'); 
+const { utils: { log } } = Apify;
 
 Apify.main(async () =>
 { 
