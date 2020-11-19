@@ -76,7 +76,7 @@ Apify.main(async () =>
                     data: csvData,
                     headers:
                     {
-                        'Content-Type': 'text/csv'
+                        'Content-Type': 'text/plain'
                     }
                 });
             console.log(result);
