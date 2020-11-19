@@ -5,7 +5,7 @@ const axios = require('axios').default;
 
 Apify.main(async () =>
 { 
-
+    //default input for testing
     let INPUT = {
         "memory": 4096, // Memory has to be a power of 2
         "useClient": false,
@@ -24,6 +24,8 @@ Apify.main(async () =>
         return;
     }
 
+    console.log(INPUT);
+
     const amazonScraperTaskId = "MpEHxpusHMW3UteqL";
 
     const token = (process.env.APIFY_TOKEN) ? process.env.APIFY_TOKEN : process.env.MY_APIFY_TOKEN;
@@ -33,6 +35,7 @@ Apify.main(async () =>
     token: token
     });
 
+    log.info('starting task');
         let runInfo = (!INPUT.useClient) ?
         (await axios.post(`https://api.apify.com/v2/actor-tasks/${amazonScraperTaskId}/runs?token=${token}&memory=${INPUT.memory}`)).data.data :
         await apifyClient.tasks.runTask(
@@ -41,7 +44,7 @@ Apify.main(async () =>
                 memory: INPUT.memory
             });
   
-   
+    log.info('polling');
     //polling
     let finished = false; 
     while (!finished) {
@@ -51,12 +54,15 @@ Apify.main(async () =>
             {
                 actId: runInfo.actId,
                 runId: runInfo.id
-            });
+                });
+        log.info(result.status);
         finished = result.status == "SUCCEEDED";
        
       }
     
+    
     //get data from default dataset of the run
+    log.info('get data from dataset');
     const csvData = (!INPUT.useClient) ? (await axios.get
         (`https://api.apify.com/v2/datasets/${runInfo.defaultDatasetId}/items?token=${token}&format=csv&limit=${INPUT.maxItems}&fields=${INPUT.fields.join(',')}`)).data :
         await apifyClient.datasets.getItems(
@@ -69,7 +75,9 @@ Apify.main(async () =>
     
     const defaultKVSId = (process.env.APIFY_DEFAULT_KEY_VALUE_STORE_ID) ? process.env.APIFY_DEFAULT_KEY_VALUE_STORE_ID : 'default';
 
+    
     //put csv to the KVS
+    log.info('set output.csv to KVS')
     if (Apify.isAtHome())
     {
         if (!INPUT.useClient)
@@ -82,7 +90,6 @@ Apify.main(async () =>
                         'Content-Type': 'text/plain'
                     }
                 });
-            console.log(result);
         }
         else
         {
@@ -98,4 +105,5 @@ Apify.main(async () =>
     { 
         await Apify.setValue('output.csv', csvData);
     }
+    log.info('Finished');
 })
