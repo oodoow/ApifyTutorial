@@ -14,7 +14,7 @@ Apify.main(async () =>
     }
     if (Apify.isAtHome())
     {
-        INPUT = Apify.getInput();
+        INPUT = await Apify.getInput();
     }
 
 
