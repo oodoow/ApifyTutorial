@@ -1,7 +1,7 @@
 const Apify = require('apify'); 
 const ApifyClient = require('apify-client');
 const { utils: { log } } = Apify;
-const fetch = require('node-fetch');
+const axios = require('axios').default;
 
 Apify.main(async () =>
 { 
@@ -11,7 +11,7 @@ Apify.main(async () =>
         "useClient": false,
         "fields": ["title", "url", "price"],
         "maxItems": 10
-    }npm
+    }
 
     if (!INPUT || INPUT == {})
     {
@@ -30,16 +30,24 @@ Apify.main(async () =>
     token: token
     });
 
-    //execute Task and get actor run Id
-    let runInfo = (!INPUT.useClient) ?
-        (await (await fetch(`https://api.apify.com/v2/actor-tasks/${amazonScraperTaskId}/runs?token=${token}&memory=${INPUT.memory}`,
-            {method:'POST'})).json()).data :
+        let runInfo = (!INPUT.useClient) ?
+        (await axios.post(`https://api.apify.com/v2/actor-tasks/${amazonScraperTaskId}/runs?token=${token}&memory=${INPUT.memory}`)).data.data :
         await apifyClient.tasks.runTask(
             {
                 taskId:amazonScraperTaskId,
                 memory: INPUT.memory
             });
-   
+    // //execute Task and get actor run Id
+    // let runInfo = (!INPUT.useClient) ?
+    //     (await (await fetch(`https://api.apify.com/v2/actor-tasks/${amazonScraperTaskId}/runs?token=${token}&memory=${INPUT.memory}`,
+    //         {method:'POST'})).json()).data :
+    //     await apifyClient.tasks.runTask(
+    //         {
+    //             taskId:amazonScraperTaskId,
+    //             memory: INPUT.memory
+    //         });
+    console.log(runInfo);
+    return;
     //polling
     let finished = false; 
     while (!finished) {
