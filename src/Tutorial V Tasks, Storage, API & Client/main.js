@@ -11,7 +11,7 @@ Apify.main(async () =>
         "useClient": false,
         "fields": ["title", "url", "price"],
         "maxItems": 10
-    }
+    }npm
 
     if (!INPUT || INPUT == {})
     {
