@@ -5,20 +5,23 @@ const axios = require('axios').default;
 
 Apify.main(async () =>
 { 
-    //const INPUT = await Apify.getInput();
-    const INPUT = {
+
+    let INPUT = {
         "memory": 4096, // Memory has to be a power of 2
         "useClient": false,
         "fields": ["title", "url", "price"],
         "maxItems": 10
     }
+    if (Apify.isAtHome())
+    {
+        INPUT = Apify.getInput();
+    }
+
 
     if (!INPUT || INPUT == {})
     {
         log.info("No input");
         return;
-
-        
     }
 
     const amazonScraperTaskId = "MpEHxpusHMW3UteqL";
