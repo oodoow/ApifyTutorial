@@ -37,22 +37,13 @@ Apify.main(async () =>
                 taskId:amazonScraperTaskId,
                 memory: INPUT.memory
             });
-    // //execute Task and get actor run Id
-    // let runInfo = (!INPUT.useClient) ?
-    //     (await (await fetch(`https://api.apify.com/v2/actor-tasks/${amazonScraperTaskId}/runs?token=${token}&memory=${INPUT.memory}`,
-    //         {method:'POST'})).json()).data :
-    //     await apifyClient.tasks.runTask(
-    //         {
-    //             taskId:amazonScraperTaskId,
-    //             memory: INPUT.memory
-    //         });
-    console.log(runInfo);
-    return;
+  
+   
     //polling
     let finished = false; 
     while (!finished) {
         await new Promise(resolve => setTimeout(resolve, 5000));
-        result = (!INPUT.useClient) ? (await (await fetch(`https://api.apify.com/v2/acts/${runInfo.actId}/runs/${runInfo.id}`)).json()).data:
+        result = (!INPUT.useClient) ? (await axios.get(`https://api.apify.com/v2/acts/${runInfo.actId}/runs/${runInfo.id}`)).data.data:
             await apifyClient.acts.getRun(
             {
                 actId: runInfo.actId,
@@ -63,8 +54,8 @@ Apify.main(async () =>
       }
     
     //get data from default dataset of the run
-    const csvData = (!INPUT.useClient) ? (await (await fetch
-        (`https://api.apify.com/v2/datasets/${runInfo.defaultDatasetId}/items?token=${token}&format=csv&limit=${INPUT.maxItems}&fields=${INPUT.fields.join(',')}`)).text()) :
+    const csvData = (!INPUT.useClient) ? (await axios.get
+        (`https://api.apify.com/v2/datasets/${runInfo.defaultDatasetId}/items?token=${token}&format=csv&limit=${INPUT.maxItems}&fields=${INPUT.fields.join(',')}`)).data :
         await apifyClient.datasets.getItems(
             {
                 datasetId: runInfo.defaultDatasetId,
@@ -80,10 +71,9 @@ Apify.main(async () =>
     {
         if (!INPUT.useClient)
         {
-            const result = await fetch(`https://api.apify.com/v2/key-value-stores/${defaultKVSId}/records/output.csv?token=${token}`,
+            const result = await axios.post(`https://api.apify.com/v2/key-value-stores/${defaultKVSId}/records/output.csv?token=${token}`,
                 {
-                    method: 'post',
-                    body: csvData,
+                    data: csvData,
                     headers:
                     {
                         'Content-Type': 'text/csv'
