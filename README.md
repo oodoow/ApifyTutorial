@@ -58,7 +58,6 @@ Task is just setting of the actor. Task is running actor in some defined configu
 ###### What are the differences between default (unnamed) and named storage? Which one would you choose for everyday usage? 
 They are basicaly the same, the unnamed storage has some unique generated id, but the id for named storage is some "name" that you choose. Only real difference is, that named storages are kept on the platform indefinitely, unnamed are deleted 7 days after creation.
 As for the question what to use, it depends. If everyday usage means scraping some data that are sent somewhere, it makes sense to use unnamed storage. If we want to save some historical data for each day ( like covid stats for example), then we use named storage.
-
 ###### What is the relationship between the Apify API and the Apify client? Are there any significant differences?
 To use API it means to send requests, with Client you can use methods with parameters, which is easier. Also client repeats unsuccessful calls. 
 ###### Is it possible to use a request queue for deduplication of product IDs? If yes, how would you do that?
@@ -69,3 +68,27 @@ Unnamed storages expire after 7 days unless otherwise specified.
 Named storages are retained indefinitely.
 ###### How do you pass input when running an actor or task via the API?
 You put it into the body of the request.
+
+## Tutorial VI Apify Proxy & Bypassing Antiscraping Software
+###### What types of proxies does the Apify Proxy include? What are the main differences between them?
+Datacenter proxy - fast, cheap but can be easily ip blocked.
+Residential proxy - computers of residents that are payed for running proxy, more expensive and slow but cannot be ip blocked (too many ips)
+Google SERP proxy - used for scraping google search results localized by country and language
+
+###### Which proxies (proxy groups) can users access with the Apify Proxy trial? How long does this trial last?
+Looks like users can access datacenter and google serp proxies for 30 days.
+###### How can you prevent a problem that one of the hardcoded proxy groups that a user is using stops working (a problem with a provider)? What should be the best practices?
+
+###### Does it make sense to rotate proxies when you are logged in?
+No, when logged in, you are acting as one user, so if you rotate proxy, it would be suspicious.
+###### Construct a proxy URL that will select proxies only from the US (without specific groups).
+
+###### What do you need to do to rotate proxies (one proxy usually has one IP)? How does this differ for Cheerio Scraper and Puppeteer Scraper?
+
+###### Try to set up the Apify Proxy (using any group or auto) in your browser. This is useful for testing how websites behave with proxies from specific countries (although most are from the US). You can try Switchy Omega extension but there are many more. Were you successful?
+###### Name a few different ways a website can prevent you from scraping it.
+It can use captcha, it can embed information into media objects like images.
+###### Do you know any software companies that develop anti-scraping solutions? Have you ever encountered them on a website?
+No, I don't and didn't.
+
+
