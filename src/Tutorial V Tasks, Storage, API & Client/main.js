@@ -93,7 +93,7 @@ Apify.main(async () =>
         }
         else
         {
-            await keyValueStores.putRecord({
+            await apifyClient.keyValueStores.putRecord({
                 storeId: defaultKVSId,
                 key: 'output.csv',
                 body: csvData,
