@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"description": "This is a boilerplate of an Apify actor.",
 	"dependencies": {
-		"axios": "^0.21.0",
+		"axios": "^0.21.1",
 		"node-fetch": "^2.6.1"
 	},
 	"devDependencies": {
