@@ -2,7 +2,7 @@
  * This template is a production ready boilerplate for developing with `CheerioCrawler`.
  * Use this to bootstrap your projects using the most up-to-date code.
  * If you're looking for examples or want to learn more, see README.
- */
+ */cd
 
 const Apify = require('apify'); 
 const { handleStart, handleNextURL, handleDetail } = require('./routes');
@@ -10,10 +10,6 @@ const { utils: { log } } = Apify;
 
 const KVSAsinCountKey = 'asinCount'
 const logInterval = 20000;
-
-
-
-
 
 Apify.main(async () =>
 {
@@ -32,7 +28,7 @@ Apify.main(async () =>
     {
         log.info(new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }), asinObject || 'empty');
     };
-    const persistObject = () => await Apify.setValue(KVSAsinCountKey, asinObject);
+    const persistObject = async function () { return await Apify.setValue(KVSAsinCountKey, asinObject) };
     Apify.events.on('persistState', persistObject); 
     setInterval(() => { logObject(asinObject); }, logInterval);
 
