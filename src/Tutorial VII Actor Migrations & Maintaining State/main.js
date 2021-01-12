@@ -2,7 +2,7 @@
  * This template is a production ready boilerplate for developing with `CheerioCrawler`.
  * Use this to bootstrap your projects using the most up-to-date code.
  * If you're looking for examples or want to learn more, see README.
- */cd
+ */
 
 const Apify = require('apify'); 
 const { handleStart, handleNextURL, handleDetail } = require('./routes');
@@ -26,27 +26,33 @@ Apify.main(async () =>
     const asinObject = await Apify.getValue(KVSAsinCountKey) || {};
     const logObject = () =>
     {
-        log.info(new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }), asinObject || 'empty');
+        if (asinObject != {})
+            log.info(new Date().toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }), asinObject);
     };
     const persistObject = async function () { return await Apify.setValue(KVSAsinCountKey, asinObject) };
     Apify.events.on('persistState', persistObject); 
-    setInterval(() => { logObject(asinObject); }, logInterval);
+    setInterval(() =>
+    {
+        logObject(asinObject);
+        persistObject();
+    }, logInterval);
 
     const requestQueue = await Apify.openRequestQueue();
     const startUrl = 'https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords='+ INPUT.keyword;
     await requestQueue.addRequest({ 'url': startUrl });
-    
+    const proxyConfiguration = await Apify.createProxyConfiguration() 
     const crawler = new Apify.CheerioCrawler({
         
         requestQueue,
-        useApifyProxy: true,
+        
         useSessionPool: true,
         persistCookiesPerSession: true,
-        // Be nice to the websites.
+        proxyConfiguration,
+        // Be nice to the w ebsites.
         // Remove to unleash full power.
         maxConcurrency: 1,
         //for debugging
-        timeOut:1000,
+        handlePageTimeoutSecs:1000,
         // You can remove this if you won't
         // be scraping any JSON endpoints.
         additionalMimeTypes: [
@@ -60,7 +66,7 @@ Apify.main(async () =>
                 case 'NEXT_URL':
                     return handleNextURL(context, INPUT);
                 case 'DETAIL':
-                    return handleDetail(context,persistObject);
+                    return handleDetail(context,asinObject,persistObject);
                 default:
                     return handleStart(context);
             }

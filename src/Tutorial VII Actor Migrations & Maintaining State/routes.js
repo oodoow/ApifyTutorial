@@ -4,30 +4,17 @@ const urlClass = require('url');
 const { utils: { log } } = Apify;
 
 exports.handleStart = async ({ request, $ }) => {
-    const divList = await $('[data-asin]').get();
-    processedIds = [];
     const requestQueue = await Apify.openRequestQueue();
-    for(const div of divList)
+    //get all product unique links in right regex pattern
+    const links = [... new Set($('div[data-asin] a.a-link-normal.a-text-normal').map(function ()
+    { return $(this).attr('href'); }).get().filter(x => x.match('/dp/')).map(x => x.match(/.*\/dp\/.*\//)[0]))];
+    
+    for(const link of links)
     {
-        const amazonId = div.attribs['data-asin'];
-        if(processedIds[amazonId])
-        {
-            continue;
-        }
+        const amazonId = link.split('/dp/')[1].replace('/','');
         const nextUrl = 'https://www.amazon.com/gp/offer-listing/'+amazonId;
-        const aList = await $('a[class=a-link-normal]',div).get();
-        for(const aTag of aList)
-        {
-            const regex = `https://.*/dp/${amazonId}/`;
-            const absoluteLink = urlClass.resolve(request.url, aTag.attribs.href);
-            const result = absoluteLink.match(regex);
-            if(result)
-            {
-                await requestQueue.addRequest({'url':result[0], userData:{'nextUrl':nextUrl, label:'NEXT_URL'}});
-                processedIds[amazonId] = true;
-                break;                              
-            }
-        }
+        const absoluteLink = new urlClass.URL(link, request.url).href;
+        await requestQueue.addRequest({url:absoluteLink, userData:{nextUrl:nextUrl, label:'NEXT_URL'}});
     }
 };
 
@@ -44,7 +31,7 @@ exports.handleNextURL = async ({ request, $}, INPUT) =>
     await requestQueue.addRequest({ 'url': request.userData.nextUrl, 'userData': { itemScrape: itemScrape, label: 'DETAIL' } });
 };
 
-exports.handleDetail = async ({ request, $ }, value, KVSAsinCountKey) =>
+exports.handleDetail = async ({ request, $ }, value,persistObject) =>
 {
     const itemScrapeTemplate = request.userData.itemScrape;
     const offerList = await $('.olpOffer').get();
@@ -71,6 +58,6 @@ exports.handleDetail = async ({ request, $ }, value, KVSAsinCountKey) =>
         else
             value[asin] = 1;
         //persist object
-        persistObject();
+        await persistObject();
     } 
 };
