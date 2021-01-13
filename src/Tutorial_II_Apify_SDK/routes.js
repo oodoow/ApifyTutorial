@@ -14,12 +14,14 @@ exports.handleStart = async ({ request, $ }) => {
         const trylinks = [... new Set($('div[data-asin] a.a-link-normal.a-text-normal').map(function ()
         { return $(this).attr('href'); }).get().filter(x => x.match(/.*\/dp\/.*\//)).map(x => x.match(/.*\/dp\/.*\//)[0]))];
         log.info('links', trylinks);
+        console.log(trylinks);
         //get all product links, transform to right regex pattern, remove duplicates
         links = [... new Set($('div[data-asin] a.a-link-normal.a-text-normal').map(function ()
         { return $(this).attr('href'); }).get().filter(x => x.match(/.*\/dp\/.*\//)).map(x => x.match(/.*\/dp\/.*\//)[0]))];
     }
     catch (error)
     { 
+        log.info(error);
         log.info('Links could not be retreived, propably blocked by amazon');
         log.info($.html());
     }
