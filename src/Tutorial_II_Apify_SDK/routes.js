@@ -50,7 +50,6 @@ exports.handleDetail = async ({ request, $ }) =>
 {
     const itemScrapeTemplate = request.userData.itemScrape;
     const offerList = await $('.olpOffer').get();
-    await Apify.utils.sleep(2000);
     for (const offer of offerList)
     {
         let itemScrape = await Object.assign({}, itemScrapeTemplate);

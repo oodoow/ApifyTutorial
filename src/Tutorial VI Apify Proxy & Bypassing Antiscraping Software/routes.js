@@ -7,14 +7,27 @@ const idLimit = 10;
 
 exports.handleStart = async ({ request, $ }) => {
     const requestQueue = await Apify.openRequestQueue();
-    //get all product links, transform to right regex pattern, remove duplicates
-    const links = [... new Set($('div[data-asin] a.a-link-normal.a-text-normal').map(function ()
-    { return $(this).attr('href'); }).get().filter(x => x.match('/dp/')).map(x => x.match(/.*\/dp\/.*\//)[0]))];
+    const links = (function ()
+    {
+        try
+        {
+            //get all product links, transform to right regex pattern, remove duplicates
+            return [... new Set($('div[data-asin] a.a-link-normal.a-text-normal').map(function ()
+            {
+                return $(this).attr('href');
+            }).get().filter(x => x.match(/.*\/dp\/.*\//)).map(x => x.match(/.*\/dp\/.*\//)[0]))];
+        } catch (error)
+        {
+            log.info('Links could not be retrieved, probably blocked by amazon');
+            log.info(error);
+        }
+    })();
+   
     
     for(const link of links)
     {
         const amazonId = link.split('/dp/')[1].replace('/','');
-        const nextUrl = 'https://www.amazon.com/gp/offer-listing/'+amazonId;
+        const nextUrl = 'https://www.amazon.com/gp/offer-listing/' + amazonId;
         const absoluteLink = new urlClass.URL(link, request.url).href;
         await requestQueue.addRequest({url:absoluteLink, userData:{nextUrl:nextUrl, label:'NEXT_URL'}});
     }

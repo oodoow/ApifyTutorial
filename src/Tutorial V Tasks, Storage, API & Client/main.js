@@ -24,15 +24,14 @@ Apify.main(async () =>
         return;
     }
 
-    console.log(INPUT);
+    log.info('input',INPUT);
 
     const amazonScraperTaskId = "MpEHxpusHMW3UteqL";
 
     const token = (process.env.APIFY_TOKEN) ? process.env.APIFY_TOKEN : process.env.MY_APIFY_TOKEN;
 
     const apifyClient = new ApifyClient({
-    userId: process.env.APIFY_USER_ID,
-    token: token
+        token: token
     });
 
     log.info('starting task');
