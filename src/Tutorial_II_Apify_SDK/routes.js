@@ -10,6 +10,10 @@ exports.handleStart = async ({ request, $ }) => {
     const links = [];
     try
     {
+        //get all product links
+        const trylinks = $('div[data-asin] a.a-link-normal.a-text-normal').map(function ()
+        { return $(this).attr('href'); }).get().filter(x => x.match(/.*\/dp\/.*\//));
+        log.info('links', trylinks);
         //get all product links, transform to right regex pattern, remove duplicates
         links = [... new Set($('div[data-asin] a.a-link-normal.a-text-normal').map(function ()
         { return $(this).attr('href'); }).get().filter(x => x.match(/.*\/dp\/.*\//)).map(x => x.match(/.*\/dp\/.*\//)[0]))];
