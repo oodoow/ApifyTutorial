@@ -7,24 +7,22 @@ const idLimit = 10;
 
 exports.handleStart = async ({ request, $ }) => {
     const requestQueue = await Apify.openRequestQueue();
-    const links = [];
-    try
+    const links = (function ()
     {
-        //get all product links
-        const trylinks = [... new Set($('div[data-asin] a.a-link-normal.a-text-normal').map(function ()
-        { return $(this).attr('href'); }).get().filter(x => x.match(/.*\/dp\/.*\//)).map(x => x.match(/.*\/dp\/.*\//)[0]))];
-        log.info('links', trylinks);
-        console.log(trylinks);
-        //get all product links, transform to right regex pattern, remove duplicates
-        links = [... new Set($('div[data-asin] a.a-link-normal.a-text-normal').map(function ()
-        { return $(this).attr('href'); }).get().filter(x => x.match(/.*\/dp\/.*\//)).map(x => x.match(/.*\/dp\/.*\//)[0]))];
-    }
-    catch (error)
-    { 
-        log.info(error);
-        log.info('Links could not be retreived, propably blocked by amazon');
-        log.info($.html());
-    }
+        try
+        {
+            //get all product links, transform to right regex pattern, remove duplicates
+            return [... new Set($('div[data-asin] a.a-link-normal.a-text-normal').map(function ()
+            {
+                return $(this).attr('href');
+            }).get().filter(x => x.match(/.*\/dp\/.*\//)).map(x => x.match(/.*\/dp\/.*\//)[0]))];
+        } catch (error)
+        {
+            log.info('Links could not be retrieved, probably blocked by amazon');
+            log.info(error);
+        }
+    })();
+   
     
     for(const link of links)
     {
