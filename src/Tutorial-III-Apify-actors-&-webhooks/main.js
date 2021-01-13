@@ -12,9 +12,6 @@ Apify.main(async () =>
     }
     
 
-    const trylinks = $('div[data-asin] a.a-link-normal.a-text-normal').map(function ()
-    { return $(this).attr('href'); });
-    log.info('links', trylinks);
     //get data from amazon scraper default dataset
     let dataset = await Apify.openDataset(INPUT.resourceId.defaultDatasetId, { forceCloud: true });
     const data = await dataset.getData();
