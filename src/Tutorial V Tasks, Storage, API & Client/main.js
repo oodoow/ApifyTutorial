@@ -8,7 +8,7 @@ Apify.main(async () =>
     //default input for testing
     let INPUT = {
         "memory": 4096, // Memory has to be a power of 2
-        "useClient": false,
+        "useClient": true,
         "fields": ["title", "url", "price"],
         "maxItems": 10
     }
@@ -18,7 +18,7 @@ Apify.main(async () =>
     }
 
 
-    if (!INPUT || INPUT == {})
+    if (!INPUT || INPUT === {})
     {
         log.info("No input");
         return;
@@ -28,7 +28,7 @@ Apify.main(async () =>
 
     const amazonScraperTaskId = "MpEHxpusHMW3UteqL";
 
-    const token = (process.env.APIFY_TOKEN) ? process.env.APIFY_TOKEN : process.env.MY_APIFY_TOKEN;
+    const token = process.env.APIFY_TOKEN || process.env.MY_APIFY_TOKEN;
 
     const apifyClient = new ApifyClient({
     userId: process.env.APIFY_USER_ID,
@@ -49,7 +49,7 @@ Apify.main(async () =>
     let finished = false; 
     while (!finished) {
         await new Promise(resolve => setTimeout(resolve, 5000));
-        result = (!INPUT.useClient) ? (await axios.get(`https://api.apify.com/v2/acts/${runInfo.actId}/runs/${runInfo.id}`)).data.data:
+        let result = (!INPUT.useClient) ? (await axios.get(`https://api.apify.com/v2/acts/${runInfo.actId}/runs/${runInfo.id}`)).data.data:
             await apifyClient.acts.getRun(
             {
                 actId: runInfo.actId,
@@ -65,15 +65,15 @@ Apify.main(async () =>
     log.info('get data from dataset');
     const csvData = (!INPUT.useClient) ? (await axios.get
         (`https://api.apify.com/v2/datasets/${runInfo.defaultDatasetId}/items?token=${token}&format=csv&limit=${INPUT.maxItems}&fields=${INPUT.fields.join(',')}`)).data :
-        await apifyClient.datasets.getItems(
+        (await apifyClient.datasets.getItems(
             {
                 datasetId: runInfo.defaultDatasetId,
                 format: 'csv',
                 limit: 10,
                 fields: INPUT.fields
-            }).items;
+            })).items;
     
-    const defaultKVSId = (process.env.APIFY_DEFAULT_KEY_VALUE_STORE_ID) ? process.env.APIFY_DEFAULT_KEY_VALUE_STORE_ID : 'default';
+    const defaultKVSId = process.env.APIFY_DEFAULT_KEY_VALUE_STORE_ID || 'default';
 
     
     //put csv to the KVS
