@@ -6,37 +6,30 @@ const { utils: { log } } = Apify;
 const idLimit = 10;
 
 exports.handleStart = async ({ request, $ }) => {
-    const divList = await $('[data-asin]').get();
-    if (divList.length === 0)
-    {
-        throw Error('no data asin, propably got captcha');
-
-    }
-
-    processedIds = [];
     const requestQueue = await Apify.openRequestQueue();
-    let count = 0;
-    for(const div of divList)
+    const links = (function ()
     {
-        const amazonId = div.attribs['data-asin'];
-        if(processedIds[amazonId])
+        try
         {
-            continue;
-        }
-        const nextUrl = 'https://www.amazon.com/gp/offer-listing/'+amazonId;
-        const aList = await $('a[class=a-link-normal]',div).get();
-        for(const aTag of aList)
-        {
-            const regex = `https://.*/dp/${amazonId}/`;
-            const absoluteLink = urlClass.resolve(request.url, aTag.attribs.href);
-            const result = absoluteLink.match(regex);
-            if(result!=null && count++<idLimit)
+            //get all product links, transform to right regex pattern, remove duplicates
+            return [... new Set($('div[data-asin] a.a-link-normal.a-text-normal').map(function ()
             {
-                await requestQueue.addRequest({'url':result[0], userData:{'nextUrl':nextUrl, label:'NEXT_URL'}});
-                processedIds[amazonId] = true;
-                break;                              
-            }
+                return $(this).attr('href');
+            }).get().filter(x => x.match(/.*\/dp\/.*\//)).map(x => x.match(/.*\/dp\/.*\//)[0]))];
+        } catch (error)
+        {
+            log.info('Links could not be retrieved, probably blocked by amazon');
+            log.info(error);
         }
+    })();
+   
+    
+    for(const link of links)
+    {
+        const amazonId = link.split('/dp/')[1].replace('/','');
+        const nextUrl = 'https://www.amazon.com/gp/offer-listing/' + amazonId;
+        const absoluteLink = new urlClass.URL(link, request.url).href;
+        await requestQueue.addRequest({url:absoluteLink, userData:{nextUrl:nextUrl, label:'NEXT_URL'}});
     }
 };
 

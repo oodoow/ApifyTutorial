@@ -29,10 +29,9 @@ Apify.main(async () =>
     const crawler = new Apify.CheerioCrawler({
         
         requestQueue,
-        useApifyProxy: true,
         useSessionPool: true,
         persistCookiesPerSession: true,
-        proxyConfiguration: proxyConfiguration,
+        proxyConfiguration,
         sessionPoolOptions:
         {
             sessionOptions:
@@ -43,7 +42,7 @@ Apify.main(async () =>
         maxConcurrency: 1,
         maxRequestRetries:5,
         //for debugging
-        timeOut: 1000,
+        handlePageTimeoutSecs:1000,
         handlePageFunction: async (context) =>
         {
             try
@@ -74,23 +73,6 @@ Apify.main(async () =>
 
     log.info('Starting the crawl.');
     await crawler.run();
-    log.info('Crawl finished.');
-
-    let dataset = await Apify.openDataset();
-    let info = await dataset.getInfo();
+    log.info('Crawl finished.');    
     
-    const options = (process.env.APIFY_TOKEN) ? {} : { token: process.env.MY_APIFY_TOKEN };
-    const datasetLink = `https://api.apify.com/v2/datasets/${info.id}/items?format=json&clean=1`
-    
-    if (Apify.isAtHome())
-    {
-        log.info('Sending email with results link');
-        const result = await Apify.call('apify/send-mail',
-            {
-                to: 'oodoow@gmail.com',
-                subject: 'Jan Suchomel - This is for the Apify SDK exercise',
-                text: datasetLink
-            },
-            options);
-    }
 });

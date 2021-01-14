@@ -23,19 +23,20 @@ Apify.main(async () =>
 
     const requestQueue = await Apify.openRequestQueue();
     const startUrl = 'https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords='+ INPUT.keyword;
-    await requestQueue.addRequest({'url':startUrl});
+    await requestQueue.addRequest({ 'url': startUrl });
+    //const proxyConfiguration = await Apify.createProxyConfiguration() 
  
     const crawler = new Apify.CheerioCrawler({
         
         requestQueue,
-        useApifyProxy: true,
+        //proxyConfiguration,
         useSessionPool: true,
         persistCookiesPerSession: true,
         // Be nice to the websites.
         // Remove to unleash full power.
         maxConcurrency: 1,
         //for debugging
-        timeOut:1000,
+        handlePageTimeoutSecs:1000,
         // You can remove this if you won't
         // be scraping any JSON endpoints.
         additionalMimeTypes: [
