@@ -67,8 +67,8 @@ Apify.main(async () =>
     const csvData = (!INPUT.useClient) ? (await axios.get
         (`https://api.apify.com/v2/datasets/${runInfo.defaultDatasetId}/items?token=${token}&format=csv&limit=${INPUT.maxItems}&fields=${INPUT.fields.join(',')}`)).data :
         (await datasetClient.downloadItems(
+            'csv',
             {
-                format: 'csv',
                 limit: 10,
                 fields: INPUT.fields
             })).toString();
