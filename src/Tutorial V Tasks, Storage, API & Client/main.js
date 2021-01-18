@@ -57,8 +57,11 @@ Apify.main(async () =>
             await runClient.get();
         log.info(result.status);
         finished = result.status == "SUCCEEDED";
-       
-      }
+        if(!finished && result.status!=="RUNNING")
+        {
+            throw new Error(`AmazonScraperActor did not succeeded and is not running, actor status:${result.status}`);
+        }
+    }
     
     
     //get data from default dataset of the run
