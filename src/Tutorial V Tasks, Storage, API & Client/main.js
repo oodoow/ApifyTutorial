@@ -1,6 +1,5 @@
 const Apify = require('apify'); 
 const ApifyClient = require('apify-client');
-const TaskClient = ApifyClient.TaskClient;
 const { utils: { log } } = Apify;
 const axios = require('axios').default;
 
@@ -8,7 +7,7 @@ Apify.main(async () =>
 { 
     //default input for testing
     let INPUT = {
-        "memory": 4096, // Memory has to be a power of 2
+        "memory": 1024, // Memory has to be a power of 2
         "useClient": false,
         "fields": ["title", "url", "price"],
         "maxItems": 10
@@ -85,12 +84,12 @@ Apify.main(async () =>
     {
         const keyValueStoreClient = apifyClient.keyValueStore(defaultKVSId);
         const result = (!INPUT.useClient)?
-            await axios.post(`https://api.apify.com/v2/key-value-stores/${defaultKVSId}/records/output.csv?token=${token}`,
+                await axios.put(`https://api.apify.com/v2/key-value-stores/${defaultKVSId}/records/output.csv?token=${token}`,
+                Buffer.from(csvData),
                 {
-                    data: csvData,
                     headers:
                     {
-                        'Content-Type': 'text/plain'
+                        'content-type': 'application/octet-stream'
                     }
                 }):
             await keyValueStoreClient.setRecord({
@@ -101,7 +100,7 @@ Apify.main(async () =>
     }
     else
     { 
-        const result = await Apify.setValue('output.csv', result);
+        const result = await Apify.setValue('output.csv', csvData);
         log.info("result:",result);
     }
     log.info('Finished');
