@@ -1,5 +1,6 @@
 const Apify = require('apify'); 
 const ApifyClient = require('apify-client');
+const TaskClient = ApifyClient.TaskClient;
 const { utils: { log } } = Apify;
 const axios = require('axios').default;
 
@@ -8,7 +9,7 @@ Apify.main(async () =>
     //default input for testing
     let INPUT = {
         "memory": 4096, // Memory has to be a power of 2
-        "useClient": true,
+        "useClient": false,
         "fields": ["title", "url", "price"],
         "maxItems": 10
     }
@@ -34,26 +35,26 @@ Apify.main(async () =>
         token: token
     });
 
+    const taskClient = apifyClient.task(amazonScraperTaskId);
+    
+
     log.info('starting task');
         let runInfo = (!INPUT.useClient) ?
         (await axios.post(`https://api.apify.com/v2/actor-tasks/${amazonScraperTaskId}/runs?token=${token}&memory=${INPUT.memory}`)).data.data :
-        await apifyClient.tasks.runTask(
+        await taskClient.start(
             {
-                taskId:amazonScraperTaskId,
-                memory: INPUT.memory
+                memory: INPUT.memory,
+                waitSecs:1
             });
   
     log.info('polling');
     //polling
+    const runClient = apifyClient.run(runInfo.id)
     let finished = false; 
     while (!finished) {
         await new Promise(resolve => setTimeout(resolve, 5000));
         let result = (!INPUT.useClient) ? (await axios.get(`https://api.apify.com/v2/acts/${runInfo.actId}/runs/${runInfo.id}`)).data.data:
-            await apifyClient.acts.getRun(
-            {
-                actId: runInfo.actId,
-                runId: runInfo.id
-                });
+            await runClient.get();
         log.info(result.status);
         finished = result.status == "SUCCEEDED";
        
@@ -62,15 +63,15 @@ Apify.main(async () =>
     
     //get data from default dataset of the run
     log.info('get data from dataset');
+    const datasetClient = apifyClient.dataset(runInfo.defaultDatasetId)
     const csvData = (!INPUT.useClient) ? (await axios.get
         (`https://api.apify.com/v2/datasets/${runInfo.defaultDatasetId}/items?token=${token}&format=csv&limit=${INPUT.maxItems}&fields=${INPUT.fields.join(',')}`)).data :
-        (await apifyClient.datasets.getItems(
+        (await datasetClient.downloadItems(
             {
-                datasetId: runInfo.defaultDatasetId,
                 format: 'csv',
                 limit: 10,
                 fields: INPUT.fields
-            })).items;
+            })).toString();
     
     const defaultKVSId = process.env.APIFY_DEFAULT_KEY_VALUE_STORE_ID || 'default';
 
@@ -79,30 +80,27 @@ Apify.main(async () =>
     log.info('set output.csv to KVS')
     if (Apify.isAtHome())
     {
-        if (!INPUT.useClient)
-        {
-            const result = await axios.post(`https://api.apify.com/v2/key-value-stores/${defaultKVSId}/records/output.csv?token=${token}`,
+        const keyValueStoreClient = apifyClient.keyValueStore(defaultKVSId);
+        const result = (!INPUT.useClient)?
+            await axios.post(`https://api.apify.com/v2/key-value-stores/${defaultKVSId}/records/output.csv?token=${token}`,
                 {
                     data: csvData,
                     headers:
                     {
                         'Content-Type': 'text/plain'
                     }
-                });
-        }
-        else
-        {
-            await apifyClient.keyValueStores.putRecord({
-                storeId: defaultKVSId,
-                key: 'output.csv',
+                }):
+            await keyValueStoreClient.setRecord({
+                recordKey: 'output.csv',
                 body: csvData,
                 contentType: 'text/csv',
             });
-        }
+            log.info("result:",result);
     }
     else
     { 
-        await Apify.setValue('output.csv', csvData);
+        const result = await Apify.setValue('output.csv', result);
+        log.info("result:",result);
     }
     log.info('Finished');
 })
