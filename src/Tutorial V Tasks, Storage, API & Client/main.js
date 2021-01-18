@@ -91,7 +91,7 @@ Apify.main(async () =>
                     }
                 }):
             await keyValueStoreClient.setRecord({
-                recordKey: 'output.csv',
+                key: 'output.csv',
                 body: csvData,
                 contentType: 'text/csv',
             });
