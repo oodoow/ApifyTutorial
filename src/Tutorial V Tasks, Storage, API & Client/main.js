@@ -71,7 +71,7 @@ Apify.main(async () =>
             {
                 limit: 10,
                 fields: INPUT.fields
-            })).toString();
+            }));
     
     const defaultKVSId = process.env.APIFY_DEFAULT_KEY_VALUE_STORE_ID || 'default';
 
@@ -92,8 +92,7 @@ Apify.main(async () =>
                 }):
             await keyValueStoreClient.setRecord({
                 key: 'output.csv',
-                body: csvData,
-                contentType: 'text/csv',
+                value: csvData
             });
             log.info("result:",result);
     }
