@@ -5,9 +5,9 @@ You can use JQuery syntax in cheerio clawler, also in Puppeteers page.eval funct
 ###### What is the main difference between Cheerio and JQuery?
 JQuery runs in the browser, so it can be used for dynamically created pages. Cheerio just parses source code of the page and then uses jquery syntax for selecting/manipulating DOM.
 ###### When would you use CheerioCrawler and what are its limitations?
-CheerioClawler is useful for non dynamic pages. Pages that has not elements created by javascript. For javascript pages it does not work, because it just parse source code of page. Generally, if possible, it is better to use Cheerio, because of speed and hardware requirements.
+CheerioClawler is useful for non dynamic pages. Pages that have not elements created by javascript. For javascript pages it does not work, because it just parse source code of page. Generally, if possible, it is better to use Cheerio, because of speed and hardware requirements.
 ###### What are the main classes for managing requests and when and why would you use one instead of another?
-RequestQueue and RequestList. Generally RequestQueue is used, if dynamical adding requests is needed. Typically for scraping some eshop products, where we dont know or product links at the start. RequestList is used if we have constant array of urls that we want to process.
+RequestQueue and RequestList. Generally RequestQueue is used, if dynamical adding requests is needed. Typically for scraping some eshop products, where we dont know all product links at the start. RequestList is used if we have constant array of urls that we want to process.
 ###### How can you extract data from a page in Puppeteer without using JQuery?
 Without JQuery you can use document query selector. Functions like page.$ or page.$$
 ###### What is the default concurrency/parallelism the SDK uses?
@@ -48,7 +48,7 @@ It uploads actor to the platform and builds it.
 Task is just setting of the actor. Task is running actor in some defined configuration like memory, input, timeout...
 ###### What are the differences between default (unnamed) and named storage? Which one would you choose for everyday usage? 
 They are basicaly the same, the unnamed storage has some unique generated id, but the id for named storage is some "name" that you choose. Only real difference is, that named storages are kept on the platform indefinitely, unnamed are deleted 7 days after creation.
-As for the question what to use, it depends. If everyday usage means scraping some data that are sent somewhere, it makes sense to use unnamed storage. If we want to save some historical data for each day ( like covid stats for example), then we use named storage.
+As for the question what to use, it depends. If everyday usage means scraping some data that are sent somewhere, it makes sense to use unnamed storage. If we want to save some historical data for each day, and maybe share it with rest of the world ( like covid stats for example), then we use named storage.
 ###### What is the relationship between the Apify API and the Apify client? Are there any significant differences?
 To use API it means to send requests, with Client you can use methods with parameters, which is easier. Also client repeats unsuccessful calls. 
 ###### Is it possible to use a request queue for deduplication of product IDs? If yes, how would you do that?
@@ -79,7 +79,7 @@ For simple request just use proxyUrl parameter, then each request use new proxy 
 Same with Cheerio Clawler by using proxyConfiguration paramater in Cheerio Clawler constructor.
 With Puppeteer Clawler you need to restart browser to rotate proxy. You can use retireInstanceAfterRequestCount property to set number of request after which the proxy should be rotated or you can implement more intelligent way to retire browser after unsuccessful requests.
 ###### Try to set up the Apify Proxy (using any group or auto) in your browser. This is useful for testing how websites behave with proxies from specific countries (although most are from the US). You can try Switchy Omega extension but there are many more. Were you successful?
-It works for 'groups-BUYPROXIES94952', but not for example 'groups-RESIDENTIAL,country-FR' https://www.iplocation.net/ always show some US city and not from France as it should? Also could not find any list of possible country codes.
+No, did not work. Also could not find any list of possible country codes.
 ###### Name a few different ways a website can prevent you from scraping it.
 It can use captcha, it can embed information into media objects like images or it can just not response at all.
 ###### Do you know any software companies that develop anti-scraping solutions? Have you ever encountered them on a website?
@@ -99,4 +99,4 @@ If we want to access data from the outside, it is better for KVS to have some no
 
 ###### Elaborate if you can ensure this object will stay 100% accurate, which means it will reflect the data in the dataset. Is this possible? If so, how?
 I dont know how to ensure 100% accuracy. If actor migrate or throw error just after updating the dataset and before updating and persisting the object, then object and data in the dataset will differ. Also that would mean, that the url will be processed again, and there will be a duplicate in the dataset. (that could be removed by deduplication actor) Maybe this could be solved by implementing transactions like in database. 
-Other than this rare occassion, object should remain accurate, its persisting every time persist state event launch, so every 60 seconds and when migrating, it is also persisting before actor finish.
+Other than this rare occassion, object should remain accurate, its persisting every time persist state event launch, so every 60 seconds and when migrating, it is also persisting after each change in the dataset and before actor finish.
