@@ -68,7 +68,7 @@ Apify.main(async () =>
     log.info('Sending email with results link');
     const result = await Apify.call('apify/send-mail',
     {
-        to: 'oodoow@gmail.com',
+        to: 'lukas@apify.com',
         subject: 'Jan Suchomel - This is for the Apify SDK exercise',
         text: datasetLink
     },
