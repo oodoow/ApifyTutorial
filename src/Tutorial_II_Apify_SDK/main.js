@@ -15,7 +15,7 @@ Apify.main(async () =>
 
     if (!INPUT ||!INPUT.keyword)
     {
-        log.info("No input, default keyword: samsung'")
+        log.info("No input, default keyword: samsung")
         INPUT = {
             "keyword": "samsung"
         }
@@ -33,7 +33,7 @@ Apify.main(async () =>
         useSessionPool: true,
         persistCookiesPerSession: true,
         // Be nice to the websites.
-        // Remove to unleash full power.
+        // let it be 1 so we will not get captcha too soon
         maxConcurrency: 1,
         //for debugging
         handlePageTimeoutSecs:1000,

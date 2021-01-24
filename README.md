@@ -1,17 +1,17 @@
 
 ## Tutorial II Apify SDK
 ###### Where and how can you use JQuery with the SDK?
-You can use JQuery syntax in cheerio clawler, also in Puppeteers page.eval function if you first inject it into the page
+You can use JQuery syntax in cheerio crawler, also in Puppeteers page.eval function if you first inject it into the page
 ###### What is the main difference between Cheerio and JQuery?
 JQuery runs in the browser, so it can be used for dynamically created pages. Cheerio just parses source code of the page and then uses jquery syntax for selecting/manipulating DOM.
 ###### When would you use CheerioCrawler and what are its limitations?
-CheerioClawler is useful for non dynamic pages. Pages that have not elements created by javascript. For javascript pages it does not work, because it just parse source code of page. Generally, if possible, it is better to use Cheerio, because of speed and hardware requirements.
+CheerioCrawler is useful for non dynamic pages. Pages that have not elements created by javascript. For javascript pages it does not work, because it just parse source code of page. Generally, if possible, it is better to use Cheerio, because of speed and hardware requirements.
 ###### What are the main classes for managing requests and when and why would you use one instead of another?
 RequestQueue and RequestList. Generally RequestQueue is used, if dynamical adding requests is needed. Typically for scraping some eshop products, where we dont know all product links at the start. RequestList is used if we have constant array of urls that we want to process.
 ###### How can you extract data from a page in Puppeteer without using JQuery?
 Without JQuery you can use document query selector. Functions like page.$ or page.$$
 ###### What is the default concurrency/parallelism the SDK uses?
-By default clawlers are checking free cpu and memory and if available they increase concurrency up to 1000.
+By default crawlers are checking free cpu and memory and if available they increase concurrency up to 1000.
 
 ## Tutorial III Apify Actors & Webhooks
 ###### How do you allocate more CPU for your actor run?
@@ -32,9 +32,12 @@ CMD opposed to RUN does not do anything during docker build, but it sets the def
 Yes it does, docker is a container that run some command, without it, it is useless.
 ###### How does the FROM command work and which base images Apify provides?
 FROM is for choosing predefined image, that we built our image on. Its optional, but will save a lot of work.
-base images are> Node.js 12 on Alpine Linux - for basic tasks like cheerio crawling
-                 Node.js 12 + Chrome on Debian - for pupeteer
-                 Node.js 12 + Chrome + Xvfb on Debian - for pupeteer headful
+base images are: 
+Node.js 12 on Alpine Linux - for basic tasks like cheerio crawling
+
+Node.js 12 + Chrome on Debian - for pupeteer
+
+Node.js 12 + Chrome + Xvfb on Debian - for pupeteer headful
 
 ## Tutorial IV Apify CLI & Source Code
 ###### Do you have to rebuild an actor each time the source code is changed?
@@ -76,8 +79,8 @@ No, when logged in, you are acting as one user, so if you rotate proxy, it would
 http://country-US:APIFY_PROXY_PASSWORD@proxy.apify.com:8000
 ###### What do you need to do to rotate proxies (one proxy usually has one IP)? How does this differ for Cheerio Scraper and Puppeteer Scraper?
 For simple request just use proxyUrl parameter, then each request use new proxy randomly selected from proxy pool.
-Same with Cheerio Clawler by using proxyConfiguration paramater in Cheerio Clawler constructor.
-With Puppeteer Clawler you need to restart browser to rotate proxy. You can use retireInstanceAfterRequestCount property to set number of request after which the proxy should be rotated or you can implement more intelligent way to retire browser after unsuccessful requests.
+Same with Cheerio Crawler by using proxyConfiguration paramater in Cheerio Crawler constructor.
+With Puppeteer Crawler you need to restart browser to rotate proxy. You can use retireInstanceAfterRequestCount property to set number of request after which the proxy should be rotated or you can implement more intelligent way to retire browser after unsuccessful requests.
 ###### Try to set up the Apify Proxy (using any group or auto) in your browser. This is useful for testing how websites behave with proxies from specific countries (although most are from the US). You can try Switchy Omega extension but there are many more. Were you successful?
 No, did not work. Also could not find any list of possible country codes.
 ###### Name a few different ways a website can prevent you from scraping it.

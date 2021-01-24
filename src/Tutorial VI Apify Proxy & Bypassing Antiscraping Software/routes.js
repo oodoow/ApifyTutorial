@@ -58,15 +58,15 @@ exports.handleDetail = async ({ request, $ }) =>
     {
         let itemScrape = await Object.assign({}, itemScrapeTemplate);
         itemScrape.price= $('.olpOfferPrice',offer).text().trim();
-        itemScrape.shipping = $('.olpFbaPopoverTrigger',offer).text().trim();
-        if(!itemScrape.shipping)
+        itemScrape.shippingPrice = $('.olpFbaPopoverTrigger',offer).text().trim();
+        if(!itemScrape.shippingPrice)
         {
-            itemScrape.shipping = $('.a-list-item',offer).first().text().trim();
+            itemScrape.shippingPrice = $('.a-list-item',offer).first().text().trim();
         }
-        itemScrape.seller = $('.olpSellerName', offer).text().trim();
-        if (!itemScrape.seller)
+        itemScrape.sellerName = $('.olpSellerName', offer).text().trim();
+        if (!itemScrape.sellerName)
         {
-            itemScrape.seller = $('.olpSellerName img', offer).attr('alt');                        
+            itemScrape.sellerName = $('.olpSellerName img', offer).attr('alt');                        
         }
         await Apify.pushData(itemScrape);
     }
