@@ -42,7 +42,7 @@ Yes, actor must be rebuilded, you can set it up to do it automatically with gith
 ###### What is the difference between pushing your code changes and creating a pull request?
 PR must be approved and merged, push just put your code changes to the repository.
 ###### How does the apify push command work? Is it worth using, in your opinion?
-It uploads actor to the platform and builds it. 
+It uploads actor to the platform and builds it. It can save some work, if you are developing actor locally and want to try how it behave on the platform.
 ## Tutorial V Tasks, Storage, API & Client
 ###### What is the relationship between actor and task?
 Task is just setting of the actor. Task is running actor in some defined configuration like memory, input, timeout...
