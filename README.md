@@ -33,9 +33,9 @@ Yes it does, docker is a container that run some command, without it, it is usel
 ###### How does the FROM command work and which base images Apify provides?
 FROM is for choosing predefined image, that we built our image on. Its optional, but will save a lot of work.
 base images are:
-Node.js 12 on Alpine Linux - for basic tasks like cheerio crawling
-Node.js 12 + Chrome on Debian - for pupeteer
-Node.js 12 + Chrome + Xvfb on Debian - for pupeteer headful
+*Node.js 12 on Alpine Linux - for basic tasks like cheerio crawling
+*Node.js 12 + Chrome on Debian - for pupeteer
+*Node.js 12 + Chrome + Xvfb on Debian - for pupeteer headful
 
 ## Tutorial IV Apify CLI & Source Code
 ###### Do you have to rebuild an actor each time the source code is changed?
@@ -63,9 +63,9 @@ You put it into the body of the request.
 
 ## Tutorial VI Apify Proxy & Bypassing Antiscraping Software
 ###### What types of proxies does the Apify Proxy include? What are the main differences between them?
-Datacenter proxy - fast, cheap but can be easily ip blocked.
-Residential proxy - computers of residents that are payed for running proxy, more expensive and slow but cannot be ip blocked (too many ips)
-Google SERP proxy - used for scraping google search results localized by country and language
+*Datacenter proxy - fast, cheap but can be easily ip blocked.
+*Residential proxy - computers of residents that are payed for running proxy, more expensive and slow but cannot be ip blocked (too many ips)
+*Google SERP proxy - used for scraping google search results localized by country and language
 ###### Which proxies (proxy groups) can users access with the Apify Proxy trial? How long does this trial last?
 Looks like users can access datacenter and google serp proxies for 30 days.
 ###### How can you prevent a problem that one of the hardcoded proxy groups that a user is using stops working (a problem with a provider)? What should be the best practices?
