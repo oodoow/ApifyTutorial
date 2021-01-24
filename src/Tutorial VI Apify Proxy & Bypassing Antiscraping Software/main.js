@@ -36,7 +36,8 @@ Apify.main(async () =>
         {
             sessionOptions:
             {
-                maxUsageCount: 5
+                maxUsageCount: 5,
+                maxErrorScore: 1
             }
         },
         maxConcurrency: 1,

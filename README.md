@@ -39,11 +39,12 @@ base images are:
 
 ## Tutorial IV Apify CLI & Source Code
 ###### Do you have to rebuild an actor each time the source code is changed?
-Yes, actor must be rebuilded, you can set it up to do it automatically with github integration.
+Yes, actor must be rebuilt, you can set it up to do it automatically with github integration.
 ###### What is the difference between pushing your code changes and creating a pull request?
 PR must be approved and merged, push just put your code changes to the repository.
 ###### How does the apify push command work? Is it worth using, in your opinion?
 It uploads actor to the platform and builds it. It can save some work, if you are developing actor locally and want to try how it behave on the platform.
+
 ## Tutorial V Tasks, Storage, API & Client
 ###### What is the relationship between actor and task?
 Task is just setting of the actor. Task is running actor in some defined configuration like memory, input, timeout...
@@ -55,7 +56,7 @@ To use API it means to send requests, with Client you can use methods with param
 ###### Is it possible to use a request queue for deduplication of product IDs? If yes, how would you do that?
 Yes, you must override uniqueKey property of Request by setting it to product ID value. Then each product Id will be in request queue only once.
 ###### What is data retention and how does it work for all types of storage (default and named)?
-Data retention means how are data kept on platform.
+Data retention means how long are data kept on platform.
 Unnamed storages expire after 7 days unless otherwise specified.
 Named storages are retained indefinitely.
 ###### How do you pass input when running an actor or task via the API?
@@ -67,7 +68,7 @@ You put it into the body of the request.
 * Residential proxy - computers of residents that are payed for running proxy, more expensive and slow but cannot be ip blocked (too many ips)
 * Google SERP proxy - used for scraping google search results localized by country and language
 ###### Which proxies (proxy groups) can users access with the Apify Proxy trial? How long does this trial last?
-Looks like users can access datacenter and google serp proxies for 30 days.
+With Proxy trial users get 30-day of 20 shared datacenter proxies.
 ###### How can you prevent a problem that one of the hardcoded proxy groups that a user is using stops working (a problem with a provider)? What should be the best practices?
 If the proxy is hardcoded because program doesnt work with any other proxy group, then I think this has no solution. Otherwise should be better to specify larger set of proxy groups, for example, all proxies from some country. 
 Other possibility is to use proxy group specified in enviroment variable, then user can choose what group to use.
@@ -80,21 +81,25 @@ For simple request just use proxyUrl parameter, then each request use new proxy 
 Same with Cheerio Crawler by using proxyConfiguration paramater in Cheerio Crawler constructor.
 With Puppeteer Crawler you need to restart browser to rotate proxy. You can use retireInstanceAfterRequestCount property to set number of request after which the proxy should be rotated or you can implement more intelligent way to retire browser after unsuccessful requests.
 ###### Try to set up the Apify Proxy (using any group or auto) in your browser. This is useful for testing how websites behave with proxies from specific countries (although most are from the US). You can try Switchy Omega extension but there are many more. Were you successful?
-No, did not work. Also could not find any list of possible country codes.
+No, did not work. Looks like I have no proxy enabled: "Connection error / The "Proxy external access" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com"
+But on my proxy page https://my.apify.com/proxy, I see that I have BUYPROXIES94952 group and some others.
+Also could not find any list of possible country codes, that can be used.
+
 ###### Name a few different ways a website can prevent you from scraping it.
-It can use captcha, it can embed information into media objects like images or it can just not response at all.
+It can restrict number of request from the same IP, It can use captcha or it can just not response at all.
+Some websites like tableau embed information into media objects like images.
 ###### Do you know any software companies that develop anti-scraping solutions? Have you ever encountered them on a website?
 No, I don't and didn't.
 
 ## Tutorial VII Actor Migrations & Maintaining State
 ###### Actors have a Restart on error option in their Settings. Would you use this for your regular actors? Why? When would you use it, and when not?
-Generally no, it could lead to restarting loop because of the same error. Better to correct the error and then run it again. Restart on error could be used for actors, that run automatically without human supervision and it is essential for them to finish. Also it must be actors, that are reliable and a error happen only on rare ocassions and there is reason to believe that it was some random glitch and actor will succeed after restart.
+Generally no, it could lead to restarting loop because of the same error. Better to correct the error and then run it again. Restart on error could be used for actors, that run automatically without human supervision and it is essential for them to finish. Also it must be actors, that are reliable and errors happen only on rare ocassions and there is reason to believe that it was some random glitch and actor will succeed after restart.
 ###### Migrations happen randomly, but by setting Restart on error and then throwing an error in the main process, you can force a similar situation. Observe what happens. What changes and what stays the same in a restarted actor run?
 Looks like, only thing that change is APIFY_FACT enviroment variable. :)
 ###### Why don't you usually need to add any special code to handle migrations in normal crawling/scraping? Is there a component that essentially solves this problem for you?
-RequestQueue is persisted in KVS, so after migration we know which urls to scrape and which are already done.
+RequestQueue is persisted in KVS, so after migration we know which urls to scrape and which has been already done.
 ###### How can you intercept the migration event? How much time do you need after this takes place and before the actor migrates?
-You can listen for migrating event or check persistState event's isMigrating property.  
+You can listen for migrating event or check persistState event's isMigrating property. I need time for persist everything that, I need to use after migration.
 ###### When would you persist data to a default key-value store and when would you use a named key-value store?
 If we want to access data from the outside, it is better for KVS to have some normal name. Also named KVS is not deleted after some time.
 

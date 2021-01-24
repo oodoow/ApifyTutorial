@@ -4,7 +4,6 @@ const { utils: { log } } = Apify;
 Apify.main(async () =>
 { 
     const INPUT = await Apify.getInput();
-    //const INPUT = {defaultDatasetId :"RJy3eYurogxvwQXlK"}
     if (!INPUT || INPUT == {})
     {
         log.info("No input");
@@ -18,11 +17,9 @@ Apify.main(async () =>
     
     if (!data.items.length)
     {
-        log.info("No, data!");
+        log.info("No data!");
     }
 
-
-    
     const getPriceNumber = (x) => { return parseFloat(x.replace('$', '')) };
     const sameAsinGroups = Object.entries(data.items.reduce((acc, item) =>
     {

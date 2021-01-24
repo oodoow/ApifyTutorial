@@ -20,6 +20,7 @@ exports.handleStart = async ({ request, $ }) => {
         {
             log.info('Links could not be retrieved, probably blocked by amazon');
             log.info(error);
+            throw(error);
         }
     })();
    
