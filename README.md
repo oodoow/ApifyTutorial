@@ -32,11 +32,9 @@ CMD opposed to RUN does not do anything during docker build, but it sets the def
 Yes it does, docker is a container that run some command, without it, it is useless.
 ###### How does the FROM command work and which base images Apify provides?
 FROM is for choosing predefined image, that we built our image on. Its optional, but will save a lot of work.
-base images are: 
+base images are:
 Node.js 12 on Alpine Linux - for basic tasks like cheerio crawling
-
 Node.js 12 + Chrome on Debian - for pupeteer
-
 Node.js 12 + Chrome + Xvfb on Debian - for pupeteer headful
 
 ## Tutorial IV Apify CLI & Source Code
