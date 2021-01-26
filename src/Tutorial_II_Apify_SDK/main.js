@@ -63,7 +63,9 @@ Apify.main(async () =>
     let dataset = await Apify.openDataset();
     let info = await dataset.getInfo();
     
+    //for same code on the platform and local development
     const options = (process.env.APIFY_TOKEN) ? {} : { token: process.env.MY_APIFY_TOKEN };
+    
     const datasetLink = `https://api.apify.com/v2/datasets/${info.id}/items?format=json&clean=1`
     log.info('Sending email with results link');
     const result = await Apify.call('apify/send-mail',

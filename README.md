@@ -81,7 +81,7 @@ For simple request just use proxyUrl parameter, then each request use new proxy 
 Same with Cheerio Crawler by using proxyConfiguration paramater in Cheerio Crawler constructor.
 With Puppeteer Crawler you need to restart browser to rotate proxy. You can use retireInstanceAfterRequestCount property to set number of request after which the proxy should be rotated or you can implement more intelligent way to retire browser after unsuccessful requests.
 ###### Try to set up the Apify Proxy (using any group or auto) in your browser. This is useful for testing how websites behave with proxies from specific countries (although most are from the US). You can try Switchy Omega extension but there are many more. Were you successful?
-No, did not work. Looks like I have no proxy enabled: "Connection error / The "Proxy external access" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com"
+It worked in past, but now it looks like I have no proxy enabled: "Connection error / The "Proxy external access" feature is not enabled for your account. Please upgrade your plan or contact support@apify.com"
 But on my proxy page https://my.apify.com/proxy, I see that I have BUYPROXIES94952 group and some others.
 Also could not find any list of possible country codes, that can be used.
 
@@ -99,7 +99,7 @@ Looks like, only thing that change is APIFY_FACT enviroment variable. :)
 ###### Why don't you usually need to add any special code to handle migrations in normal crawling/scraping? Is there a component that essentially solves this problem for you?
 RequestQueue is persisted in KVS, so after migration we know which urls to scrape and which has been already done.
 ###### How can you intercept the migration event? How much time do you need after this takes place and before the actor migrates?
-You can listen for migrating event or check persistState event's isMigrating property. I need time for persist everything that, I need to use after migration.
+You can listen for migrating event or check persistState event's isMigrating property. I need time for persist everything that I need to use after migration.
 ###### When would you persist data to a default key-value store and when would you use a named key-value store?
 If we want to access data from the outside, it is better for KVS to have some normal name. Also named KVS is not deleted after some time.
 

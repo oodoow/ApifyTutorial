@@ -9,7 +9,7 @@ Apify.main(async () =>
 
     if (!INPUT ||!INPUT.keyword)
     {
-        log.info("No input, default keyword: samsung'")
+        log.info("No input, default keyword: samsung")
         INPUT = {
             "keyword": "samsung"
         }
